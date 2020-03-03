@@ -6,34 +6,32 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Nuevo Pedido</title>
+<title>Modificar Pedido</title>
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
-<body>
 <% HashMap<Integer,String> jspFPago = (HashMap<Integer,String>)request.getAttribute("DataFPago");
 
 
 %>
+<body>
 <div style="width:60%;margin-left:auto;margin-right:auto;">
 <h1 style="text-align:center;">Nuevo Pedido</h1>
 <form action="pedidos" method="post">
-<input type="hidden" name="accion" value="GN">
+<input type="hidden" name="accion" value="GM">
+<input type="hidden" name="pid" value=<%=request.getAttribute("pid") %>>
 <div style="margin-left:auto;margin-right:auto;">
-<label>Descripcion Pedido:</label><input class="w3-input w3-border" type="text" name="descrip" required/>
+<label>Descripcion Pedido:</label><input class="w3-input w3-border" type="text" name="descrip" value="<%=request.getAttribute("descrip") %>" required/>
 <label>Fecha:</label><input class="w3-input w3-border" type="date" name="fecha" value="<%=request.getAttribute("fecha") %>" required/>
-<label>Importe Total:</label><input class="w3-input w3-border" type="text" name="imptotal" required/>
+<label>Importe Total:</label><input class="w3-input w3-border" type="text" name="imptotal" value="<%=request.getAttribute("imptotal") %>" required/>
 
 <label>Cliente:</label><input class="w3-input w3-border" type="text" name="icliente"/>
 
-
 <label>Forma de Pago:</label>
-<select  class="w3-input w3-border" name="fpago">
+<select  class="w3-input w3-border" name="fpago" value="<%=request.getAttribute("fpago") %>">
 <% for(Map.Entry<Integer,String> e : jspFPago.entrySet()) { %>
   <option value="<%=e.getKey() %>"><%=e.getValue() %></option>
 <% } %>
 </select>
-
-
 
 
 <label>Contrato:</label><input class="w3-input w3-border" type="text" name="icontrato"/>

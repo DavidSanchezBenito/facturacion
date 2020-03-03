@@ -18,29 +18,33 @@
 <div style="margin-left:auto;margin-right:auto;">
 <table class="w3-table-all">
 <tr class="w3-light-grey">
-<th>ID</th><th>Pedido</th><th>Fecha</th>
+<th>Pedido</th><th>Fecha</th>
 <th>Importe<br/>Total</th><th>Importe<br/>Facturado</th>
-<th>Eliminar</th><th>Modificar</th>
+<th>ID1</th><th>ID2</th><th>ID3</th><th>ID4</th>
+<th>Eli.</th><th>Mod.</th>
 </tr>
 <% if (!jspPedido.isEmpty()) { %>
-<% int x=0;for(Pedido e:jspPedido) { %>
+<% for(Pedido e:jspPedido) { %>
 	<tr>
-	<td><%=e.getId_pedido()  %></td><td><%=e.getDescrip() %></td><td><%=e.getFecha() %></td>
-	<td><%=e.getTotal() %></td><td><%=e.getImporte_facturado() %></td>
+	<td><%=e.getDescrip() %></td><td><%=e.getFecha() %></td>
+	<td><%=String.format("%.0f",e.getTotal()) %></td><td><%=String.format("%.0f",e.getImporte_facturado()) %></td>
+
+	<td></td><td></td><td></td><td></td>
+
 	<td style="text-align:center;">
-	<a href="pedidos?accion=D&id=<%=x++ %>">
+	<a href="pedidos?accion=D&id=<%=e.getId_pedido() %>">
 	<img alt="Quitar Pedido" src="images/quitar.svg" width="20px" height="20px"/>
 	</a>
 	</td>
 	<td style="text-align:center;">
-	<a href="pedidos?accion=M&id=<%=x++ %>">
+	<a href="pedidos?accion=M&id=<%=e.getId_pedido() %>">
 	<img alt="Modificar Pedido" src="images/modificar.svg" width="20px" height="20px"/>
 	</a>
 	</td>
 	</tr>
 <% } } %>
 	<tr>
-	<td colspan="7">
+	<td colspan="11">
 		<form action="pedidos" method="post">
 		<div style="margin-left:auto;margin-right:auto;">
 		<input type="hidden" name="accion" value="N">

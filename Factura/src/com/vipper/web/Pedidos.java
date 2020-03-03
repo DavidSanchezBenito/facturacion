@@ -1,7 +1,6 @@
 package com.vipper.web;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -13,7 +12,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+//import javax.servlet.http.HttpSession;
 
 import com.vipper.modelo.Pedido;
 import com.vipper.persistencia.DataDB;
@@ -30,7 +29,6 @@ public class Pedidos extends HttpServlet {
      */
     public Pedidos() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -38,7 +36,7 @@ public class Pedidos extends HttpServlet {
 	 */
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		HttpSession Sesi = request.getSession();
+		//HttpSession Sesi = request.getSession();
         RequestDispatcher rd = request.getRequestDispatcher("/error.jsp");
         request.setAttribute("out", "No estas LOGEADO");
         boolean login=false;
@@ -54,20 +52,39 @@ public class Pedidos extends HttpServlet {
 	        try (DataDB BD=new DataDB()) {
 	        	switch (request.getParameter("accion")) {
         		case "M":
-                    request.setAttribute("Data", null);
+        			Pedido P = BD.uPedido(Integer.parseInt(request.getParameter("id").toString()));
+        			request.setAttribute("pid", request.getParameter("id"));
+                    request.setAttribute("descrip", P.getDescrip());
+                    request.setAttribute("fecha", P.getFecha());
+                    request.setAttribute("imptotal", String.format("%.0f",P.getTotal()));
+                    request.setAttribute("DataFPago", BD.lFPago());
+                    request.setAttribute("fpago", P.getId_forma_pago());
                     rd = request.getRequestDispatcher("/mpedido.jsp");
         			break;
         		case "N":
-                    request.setAttribute("Data", null);
+                    request.setAttribute("fecha", LocalDate.now());
+                    request.setAttribute("DataFPago", BD.lFPago());
                     rd = request.getRequestDispatcher("/ipedido.jsp");
         			break;
         		default:
         			if ("GM".equals(request.getParameter("accion"))) {
+        				BD.mPedido(Integer.parseInt(request.getParameter("pid")),
+        				     	   LocalDate.parse(request.getParameter("fecha")),
+    						       Double.parseDouble(request.getParameter("imptotal")),
+    						       request.getParameter("descrip"),
+    						       0, 0, 0, 0);
         			}
         			if ("GN".equals(request.getParameter("accion"))) {
-        				BD.nPedidos(LocalDate.now(), 1, "Pedido 2", 0, 0, 0, 0);
+        				BD.nPedido(LocalDate.parse(request.getParameter("fecha")),
+        						   Double.parseDouble(request.getParameter("imptotal")),
+        						   request.getParameter("descrip"),
+        						   0, 0, 0, 0);
         			}
         			if ("B".equals(request.getParameter("accion"))) {
+        				if (BD.bPedido(Integer.parseInt(request.getParameter("id").toString()))==false) {
+        			        request.setAttribute("out", "No se puede BORRAR");
+        			        break;
+        				}
         			}
         			List<Pedido> OutData=BD.lPedidos();
                     request.setAttribute("OutData", OutData);
@@ -83,22 +100,3 @@ public class Pedidos extends HttpServlet {
 	    rd.forward(request, response);
 	}
 }
-
-/*
-<%=session.getAttribute("odata") %>
-<%=application.getAttribute("odata") %>
-
-<%out.print(application.getMajorVersion() + "."+
-                application.getMinorVersion()); %><br>
-                <%session.setAttribute("Mi gatito", "Isidoro");
-                for(int ambito = 1; ambito <= 4; ambito++){%>
-                <h3>Ambito:<%= ambito %></h3>
-                <%Enumeration enume = pageContext.getAttributeNamesInScope(ambito);
-                while(enume.hasMoreElements()){
-                    out.println("\t<li>" + enume.nextElement()+"</li>");
-    }
-}
-                
-  %>
-  
-  */
